@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardTitle, CardDesc } from "@/components/ui/card";
+import HeaderAuthButtons from "@/components/auth/HeaderAuthButtons";
 
 export default function HomePage() {
   const [email, setEmail] = useState("");
@@ -38,7 +39,7 @@ export default function HomePage() {
         <div className="hidden sm:flex gap-2">
           <a href="#" className="btn-ghost">Features</a>
           <a href="#" className="btn-ghost">Pricing</a>
-          <a href="/login" className="btn-ghost">Login</a>
+          <HeaderAuthButtons />
         </div>
       </header>
 
