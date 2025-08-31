@@ -1,103 +1,95 @@
-import Image from "next/image";
+"use client";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardTitle, CardDesc } from "@/components/ui/card";
 
-export default function Home() {
+export default function HomePage() {
+  const [email, setEmail] = useState("");
+  const [topic, setTopic] = useState("Python");
+  const [loading, setLoading] = useState(false);
+  const [ok, setOk] = useState<null | boolean>(null);
+  const [err, setErr] = useState<string | null>(null);
+
+  async function joinWaitlist() {
+    setLoading(true); setOk(null); setErr(null);
+    try {
+      const payload = { email: email.trim(), topic: (topic || "").trim() };
+      const res = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const j = await res.json();
+      setOk(j.ok);
+      if (!j.ok) setErr(j.error || "Unknown error");
+    } catch (e:any) {
+      setOk(false); setErr(e?.message || "Network error");
+    } finally { setLoading(false); }
+  }
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <main className="container mx-auto max-w-6xl px-4">
+      <header className="flex items-center justify-between py-6">
+        <div className="flex items-center gap-3">
+          <span className="font-semibold">SevenCrash</span>
+          <span className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-full">beta</span>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+        <div className="hidden sm:flex gap-2">
+          <a href="#" className="btn-ghost">Features</a>
+          <a href="#" className="btn-ghost">Pricing</a>
+          <a href="/login" className="btn-ghost">Login</a>
+        </div>
+      </header>
+
+      <section className="mt-6 grid gap-8 lg:grid-cols-2 items-center">
+        <div className="space-y-6">
+          <h1 className="text-4xl sm:text-5xl font-bold leading-tight">
+            Learn <span className="text-blue-600">anything</span> in 7 days.
+          </h1>
+          <p className="text-gray-600">Type what you want to learn. Get a 7‑day roadmap with daily tasks & a quick quiz. Share wins, build streaks.</p>
+
+          <div className="card-glass">
+            <div className="grid gap-3 sm:grid-cols-[1fr_1fr_auto]">
+              <Input type="email" placeholder="you@email.com" value={email} onChange={(e)=>setEmail(e.target.value)} />
+              <Input placeholder="I want to learn… (e.g., Python)" value={topic} onChange={(e)=>setTopic(e.target.value)} />
+              <Button onClick={joinWaitlist} loading={loading}>Join waitlist</Button>
+            </div>
+            {ok === true && <p className="mt-3 text-green-600">You’re in! 🎉</p>}
+            {ok === false && <p className="mt-3 text-red-600">Error: {err}</p>}
+            <p className="mt-2 text-xs text-gray-500">No spam. Unsubscribe anytime.</p>
+          </div>
+        </div>
+
+        <div className="relative">
+          <div className="card-glass">
+            <Card className="mb-4">
+              <CardTitle>Day 1 • Python</CardTitle>
+              <CardDesc>Intro to syntax, variables, I/O</CardDesc>
+            </Card>
+            <Card className="mb-4">
+              <CardTitle>Day 2 • Python</CardTitle>
+              <CardDesc>Control flow: if/else, loops</CardDesc>
+            </Card>
+            <Card>
+              <CardTitle>Day 3 • Python</CardTitle>
+              <CardDesc>Lists, dicts, sets</CardDesc>
+            </Card>
+            <p className="mt-4 text-gray-600 text-sm">…auto-generated up to Day 7</p>
+          </div>
+        </div>
+      </section>
+
+      <footer className="py-12 text-sm text-gray-600 flex flex-col sm:flex-row justify-between gap-4">
+        <div className="flex flex-col sm:flex-row justify-between gap-4">
+          <p>© {new Date().getFullYear()} SevenCrash. All rights reserved.</p>
+          <div className="flex gap-4">
+            <a href="#" className="hover:underline">Privacy</a>
+            <a href="#" className="hover:underline">Terms</a>
+            <a href="#" className="hover:underline">Contact</a>
+          </div>
+        </div>
       </footer>
-    </div>
+    </main>
   );
 }
